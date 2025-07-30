@@ -1,0 +1,20 @@
+services:
+  greek-site-southbound:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: greek-site-southbound-api
+    volumes:
+      - .:/app
+    expose:
+      - 8000
+
+  greek-site-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: greek-site-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - greek-site-southbound
