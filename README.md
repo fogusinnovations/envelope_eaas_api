@@ -1,65 +1,78 @@
-# EaaS - API
+# Greek-Site Southbound Plugin API
 
-This README describes how to generate and run the EaaS API using the [fastapi-code-generator library](https://github.com/koxudaxi/fastapi-code-generator) tool.
+This repository contains the Southbound Plugin API for the Greek-Site infrastructure, built with FastAPI and containerized with Docker.
 
----
+## Features
 
-## Installation and Setup
+- **Application Management**
+  - Application Onboarding
+  - Create Application Instance
+  - Stop Application Instance
+- **Monitoring**
+  - Get Instance State
 
-### 1. Create a project folder
+## Prerequisites
+
+- Python 3.10 or higher
+- Docker and Docker Compose
+- Git
+
+## Development Setup
+
+### 1. Clone the Repository
 
 ```bash
-mkdir eaas_api
-cd eaas_api
+git clone https://github.com/fogusinnovations/envelope_eaas_api.git
+cd envelope_eaas_api
 ```
 
-### 2. Create and activate a virtual environment (Linux)
+### 2. Create and Activate Virtual Environment
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3. Install required libraries
-
-Install the code generator and dependencies:
+### 3. Install Dependencies
 
 ```bash
-pip install fastapi-code-generator
-pip install "pydantic<2.0"
-pip install "fastapi[standard]"
+pip install -r requirements.txt
 ```
 
-> `pydantic<2.0` is required due to compatibility with the generated code.
+## Running the API
 
----
+### Using Docker (Recommended)
 
-## Generate FastAPI Code from OpenAPI YAML
-
-To generate the codebase from your OpenAPI file (e.g., `EaaS-openAPI.yaml`):
+The project includes Docker configuration for both the API and Nginx reverse proxy:
 
 ```bash
-fastapi-codegen --input EaaS-openAPI.yaml --output ./app
+docker compose up --build
 ```
 
-This will create an `app/` folder with:
-- `main.py` – FastAPI application entrypoint
-- `models.py` – Pydantic models based on the OpenAPI schema
+This will:
+- Build and start the API container
+- Set up Nginx as a reverse proxy
+- Make the API available at http://localhost/api/
 
----
+### Local Development
 
-## Run the API server
+For local development without Docker:
 
 ```bash
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Access the API docs:
-- Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+## API Documentation
 
----
+Once running, access the API documentation at:
+- Swagger UI: http://localhost/docs
+- ReDoc: http://localhost/redoc
 
-## Notes
+## Code Generation
 
-The generated code does **not include route logic** — only models and route definitions.
+The API generated using [fastapi-code-generator library](https://github.com/koxudaxi/fastapi-code-generator). To regenerate the code:
+
+```bash
+fastapi-codegen --input EaaS-openAPI.yaml --output app --output-model-type pydantic_v2.BaseModel
+```
+
